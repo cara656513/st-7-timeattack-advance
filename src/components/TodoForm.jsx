@@ -1,24 +1,17 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { todoApi } from "../api/todos";
+import useTodoMutation from "./useTodoMutation";
 
 export default function TodoForm() {
   const [title, setTitle] = useState("");
   const [contents, setContents] = useState("");
 
-  const queryClient = useQueryClient();
   // TODO: 선택: useMutation을 useTodoMutation 커스텀훅으로 정리해 보세요.
-  const addMutation = useMutation({
-    mutationFn: (newTodo) => todoApi.post("/todos", newTodo),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["todos"]);
-    },
-  });
+  const { formMutation } = useTodoMutation();
   const handleAddTodo = async (e) => {
     e.preventDefault();
     setTitle("");
     setContents("");
-    addMutation.mutate({
+    formMutation.mutate({
       id: Date.now().toString(),
       title,
       contents,
